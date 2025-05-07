@@ -41,6 +41,26 @@ app.post('/log', (req, res) => {
 })
 
 
+app.get('/logs/:id', (req, res) => {
+    const idBuscado = req.params.id;
+
+    fs.readFile('logs.txt', 'utf8', (err, data) => {
+        if (err) {
+            console.error('erro ao ler o arquivo', err);
+            return res.status(500).json({ mensagem: 'erro ao ler o arquivo' });
+        }
+
+        const linhas = data.split('\n');
+        const logEncontrado = linhas.find(linha => linha.startsWith(idBuscado));
+
+        if (logEncontrado) {
+            res.json({ log: logEncontrado });
+        } else {
+            res.status(404).json({ mensagem: 'Log não encontrado' });
+        }
+    });
+});
+
 const PORT = 3000
 
 app.listen(PORT, () => {

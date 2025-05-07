@@ -13,13 +13,18 @@ function writeFile(conteudo) {
     })
 }
 
-const id = uuidv4()
-const nomeAluno = "Podro Peulo"
-const dataHora = new Date().toISOString().replace('T', ' ').slice(0, 19)
-const mensagem = `${id} - ${dataHora} - ${nomeAluno}`
+app.get('/logs', (req, res) => {
+    fs.readFile('logs.txt', 'utf8', (err, data) => {
+        if (err) {
+            console.error('erro ao ler o arquivo', err)
+            return res.status(500).json({ mensagem: 'erro ao ler o arquivo' })
+        }
 
+        const logs = data.split('\n').filter(log => log !== '')
+        res.json(logs)
+    })
+})
 
-writeFile(mensagem)
 const PORT = 3000
 
 app.listen(PORT, () => {
